@@ -26,12 +26,22 @@ document.addEventListener("DOMContentLoaded", function () {
                 return;
             }
 
+             // Use decodeURIComponent to handle character decoding
+        function decodeText(text) {
+            try {
+                return decodeURIComponent(escape(text));
+            } catch (e) {
+                return text; // Fallback to the original if decoding fails
+            }
+        }
+
+
             // Populate main site information
             document.getElementById("site-title").innerText = site.name;
             document.getElementById("site-name").innerText = site.name;
             document.getElementById("site-description").innerText = site.description;
 
-            // Add dynamic site details
+            // Add dynamic site details (Trail Length, Type, and Number of Species)
             const aboutDetails = document.getElementById("about-details");
             const details = [
                 { label: "Trail Length", value: site.length_of_trail ? `${site.length_of_trail} ${site.unit_of_measure || "mi"}` : null },
@@ -43,6 +53,51 @@ document.addEventListener("DOMContentLoaded", function () {
                 .filter((detail) => detail.value)
                 .map((detail) => `<div><strong>${detail.label}:</strong> ${detail.value}</div>`)
                 .join("");
+// Add dynamic Accessibility Information
+const birdabilityDetails = document.getElementById("birdability-details");
+
+// Define all the accessibility fields and their descriptions
+const accessibilityFields = [
+    { field: "car_birding", label: "Car Birding" },
+    { field: "park_fee", label: "Park Fee" },
+    { field: "parking_info", label: "Parking Information" },
+    { field: "bathroom_info", label: "Bathrooms" },
+    { field: "ramp_info", label: "Ramps" },
+    { field: "trail_info", label: "Trail Surface" },
+    { field: "slope_info", label: "Trail Slope" },
+    { field: "trail_width_and_pullouts", label: "Trail Width and Pullouts" },
+    { field: "step_info", label: "Steps" },
+    { field: "bench_info", label: "Benches" },
+    { field: "obstacle_info", label: "Obstacles or Obstructions" },
+    { field: "railing_or_barrier_info", label: "Railings or Barriers" },
+    { field: "low_vision_info", label: "Features for Blind or Low Vision Visitors" },
+    { field: "shade_info", label: "Shade Availability" },
+    { field: "noise_info", label: "Noise Levels" },
+    { field: "bird_blind_info", label: "Bird Blinds" },
+    { field: "maintenance_info", label: "Maintenance Information" },
+    { field: "safety_info", label: "Safety Information" },
+    { field: "other_info", label: "Other Information" },
+];
+
+// Create the accessibility content dynamically
+const accessibilityContent = accessibilityFields
+    .map((item) => {
+        const value = site[item.field];
+        // Include only fields that have valid content
+        if (value && value.trim()) {
+            return `<div class="accessibility-item">
+                        <strong>${item.label}:</strong> ${value}
+                    </div>`;
+        }
+        return null;
+    })
+    .filter(Boolean) // Remove null entries
+    .join("");
+
+// Display the accessibility information or a fallback message
+birdabilityDetails.innerHTML = accessibilityContent
+    ? accessibilityContent
+    : "<p>No accessibility information available for this site.</p>";
 
             // Initialize map
             const lat = parseFloat(site.lat);
@@ -57,6 +112,41 @@ document.addEventListener("DOMContentLoaded", function () {
             L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
                 attribution: "&copy; OpenStreetMap contributors",
             }).addTo(tourMap);
+
+            // Locate Me Functionality
+            let locationMarker;
+            let circle;
+
+            function getLocation() {
+                tourMap.locate({ setView: true, watch: true, enableHighAccuracy: true });
+
+                function onLocationFound(e) {
+                    let radius = e.accuracy / 2;
+                    console.log(`Location accuracy: ${e.accuracy} meters`);
+
+                    if (locationMarker) {
+                        tourMap.removeLayer(locationMarker);
+                        tourMap.removeLayer(circle);
+                    }
+
+                    if (e.accuracy < 90) {
+                        circle = L.circle(e.latlng, { radius: radius, interactive: false }).addTo(tourMap);
+                        locationMarker = L.marker(e.latlng, { interactive: false }).addTo(tourMap);
+                    }
+
+                    if (e.accuracy < 40) {
+                        tourMap.stopLocate();
+                    }
+                }
+
+                tourMap.on("locationfound", onLocationFound);
+
+                window.setInterval(function () {
+                    tourMap.locate({ setView: false, enableHighAccuracy: true });
+                }, 2500);
+            }
+
+            document.getElementById("locate-btn").addEventListener("click", getLocation);
 
             // Observation tool
             let ebirdId = site.ebird_id ? site.ebird_id.trim() : null;
@@ -118,7 +208,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             });
 
-            console.log("✅ Fullscreen functionality added.");
+            console.log("✅ Fullscreen and Locate Me functionalities added.");
         })
         .catch((error) => console.error("❌ Error loading site data:", error));
 });
