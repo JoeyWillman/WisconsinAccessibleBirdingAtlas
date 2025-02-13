@@ -59,7 +59,7 @@ const birdabilityDetails = document.getElementById("birdability-details");
 // Define all the accessibility fields and their descriptions
 const accessibilityFields = [
     { field: "car_birding", label: "Car Birding" },
-    { field: "park_fee", label: "Park Fee" },
+    { field: "park_fee", label: "Parking or Entrance Fee" },
     { field: "parking_info", label: "Parking Information" },
     { field: "bathroom_info", label: "Bathrooms" },
     { field: "ramp_info", label: "Ramps" },
