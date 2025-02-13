@@ -125,13 +125,13 @@ birdabilityDetails.innerHTML = accessibilityContent
                     console.log(`Location accuracy: ${e.accuracy} meters`);
 
                     if (locationMarker) {
-                        tourMap.removeLayer(locationMarker);
+                        
                         tourMap.removeLayer(circle);
                     }
 
                     if (e.accuracy < 90) {
                         circle = L.circle(e.latlng, { radius: radius, interactive: false }).addTo(tourMap);
-                        locationMarker = L.marker(e.latlng, { interactive: false }).addTo(tourMap);
+                        
                     }
 
                     if (e.accuracy < 40) {
