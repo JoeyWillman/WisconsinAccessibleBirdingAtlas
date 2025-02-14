@@ -22,7 +22,7 @@ fetch('assets/data/sites.csv')
                 L.marker([lat, lon])
                     .addTo(map)
                     .bindPopup(`<b>${site.name}</b><br>${site.description}
-                    <br><button onclick="window.location.href='tour.html?site_id=${site.site_id}'">View Tour</button>`);
+                    <br><button onclick="window.location.href='tour.html?site_id=${site.site_id}'">View Site</button>`);
             } else {
                 console.warn(`⚠️ Skipping site due to missing coordinates: ${site.name}`);
             }
