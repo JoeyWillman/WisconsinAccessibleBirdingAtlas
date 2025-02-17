@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Accessible Birding Atlas of Wisconsin</title>
+  <title>Submit a Site - Wisconsin Accessible Birding Atlas</title>
   
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -11,23 +11,66 @@
   <!-- Custom CSS -->
   <link rel="stylesheet" href="assets/styles/style.css">
 
-  
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Coiny&family=Radio+Canada&display=swap" rel="stylesheet">
-          <style>
-            .coiny-regular {
-              font-family: "Radio Canada", sans-serif;
-              font-weight: 400;
-              font-style: normal;
-            }
-        
-            body {
-              font-family: "Radio Canada", sans-serif;
-            }
-          </style>
+  
+  <style>
+    body {
+      font-family: "Radio Canada", sans-serif;
+    }
+
+    /* Step Card Styles */
+    .step-card {
+      border: none;
+      border-radius: 10px;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      text-align: center;
+      background-color: #ffffff;
+      overflow: hidden;
+    }
+
+    .step-card:hover {
+      transform: scale(1.05);
+      box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
+    }
+
+    /* Image Container for Hover Effect */
+    .card-img-container {
+      overflow: hidden;
+    }
+
+    .card-img-top {
+      transition: transform 0.3s ease;
+      width: 100%;
+      height: auto;
+    }
+
+    .step-card:hover .card-img-top {
+      transform: scale(1.1);
+    }
+
+    .step-card h4 {
+      color: #1B6CA7; /* Ocean blue */
+      font-weight: bold;
+      margin-top: 15px;
+    }
+
+    .btn-primary {
+      background-color: #1A4D7A;
+      border: none;
+      margin-bottom: 15px;
+    }
+
+    .btn-primary:hover {
+      background-color: #16406A;
+    }
+  </style>
 </head>
 <body>
+
+  <!-- Navbar -->
   <nav class="navbar navbar-expand-lg navbar-dark">
     <div class="container-fluid">
       <a class="navbar-brand" href="index.html">
@@ -39,97 +82,83 @@
       </button>
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
-          <li class="nav-item">
-            <a class="nav-link active" href="index.html">Home</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="map.html">Map</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="submit.html">Submit a Site</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="resources.html">Resources</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="about.html">About</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="contact.html">Contact</a>
-          </li>
+          <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="map.html">Map</a></li>
+          <li class="nav-item"><a class="nav-link active" href="submit.html">Submit a Site</a></li>
+          <li class="nav-item"><a class="nav-link" href="resources.html">Resources</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
         </ul>
       </div>
     </div>
   </nav>
-  <!-- Main Content -->
+
+  <!-- Page Header -->
   <div class="container mt-5">
     <h2 class="text-center mb-4">Submit a Birding Site</h2>
+    <p class="text-center">Follow these three steps to add an accessible birding site to the Wisconsin Accessible Birding Atlas.</p>
+  </div>
 
-    <form action="#" method="post" enctype="multipart/form-data" class="mb-5">
-      <div class="mb-3">
-        <label for="name" class="form-label">Your Name</label>
-        <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name" required>
-      </div>
-
-      <div class="mb-3">
-        <label for="siteName" class="form-label">Site Name</label>
-        <input type="text" class="form-control" id="siteName" name="siteName" placeholder="Enter the name of the site" required>
-      </div>
-
-      <div class="mb-3">
-        <label for="description" class="form-label">Description</label>
-        <textarea class="form-control" id="description" name="description" rows="4" placeholder="Provide a brief description of the site" required></textarea>
-      </div>
-
-      <div class="mb-3">
-        <label for="file" class="form-label">Upload a Zip File (including GPX file and any images or documents)</label>
-        <input type="file" class="form-control" id="file" name="file" accept=".zip" required>
-      </div>
-
-      <button type="submit" class="btn btn-primary">Submit Site</button>
-    </form>
-
-    <!-- Criteria Section -->
-    <div class="criteria-section">
-      <h3 class="mb-3">Site Submission Criteria</h3>
-      <p>Please ensure your submission includes the following information and criteria:</p>
+  <!-- Step Cards -->
+  <div class="container">
+    <div class="row g-4">
       
-      <ul class="list-group">
-        <li class="list-group-item">
-          <strong>Parking:</strong> Information on available parking spaces and whether they are accessible.
-        </li>
-        <li class="list-group-item">
-          <strong>Trail:</strong> Details about trail surface, length, and conditions.
-        </li>
-        <li class="list-group-item">
-          <strong>Accessibility:</strong> Describe features such as ramps, boardwalks, or any other accessibility considerations.
-        </li>
-        <li class="list-group-item">
-          <strong>Restrooms:</strong> Availability of restrooms, including any accessible facilities.
-        </li>
-        <li class="list-group-item">
-          <strong>Points of Interest (POIs):</strong> Notable features such as bird blinds, observation towers, or scenic spots.
-        </li>
-        <li class="list-group-item">
-          <strong>GPX File:</strong> A GPX file of the trail to help map the site accurately.
-        </li>
-      </ul>
+      <!-- Step 1 -->
+      <div class="col-md-4">
+        <div class="step-card">
+          <div class="card-img-container">
+            <img src="assets/img/logo.png" class="card-img-top" alt="Birdability Guidelines">
+          </div>
+          <div class="card-body">
+            <h4>Step 1: Review Accessibility Considerations</h4>
+            <p>Read <strong>Birdability’s Access Considerations</strong> to understand what makes a birding site accessible.</p>
+            <a href="https://www.birdability.org/access-considerations" target="_blank" class="btn btn-primary">Read Guidelines</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="col-md-4">
+        <div class="step-card">
+          <div class="card-img-container">
+            <img src="assets/img/logo.png" class="card-img-top" alt="Birdability Map">
+          </div>
+          <div class="card-body">
+            <h4>Step 2: Perform a Birdability Site Review</h4>
+            <p>Review the site and add it to the <strong>Birdability Map</strong> to contribute to a national effort.</p>
+            <a href="https://www.birdability.org/contribute-to-the-birdability-map" target="_blank" class="btn btn-primary">Go to Birdability Map</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 3 -->
+      <div class="col-md-4">
+        <div class="step-card">
+          <div class="card-img-container">
+            <img src="assets/img/logo.png" class="card-img-top" alt="Submit Site Form">
+          </div>
+          <div class="card-body">
+            <h4>Step 3: Submit to Our Atlas</h4>
+            <p>Fill out the Wisconsin Accessible Birding Atlas form and upload your site details, including a trail file.</p>
+            <a href="#submit-form" class="btn btn-primary">Go to Submission Form</a>
+          </div>
+        </div>
+      </div>
+
     </div>
   </div>
+
+
 
   <!-- Footer -->
-<footer class="footer" style="background-color: #1A4D7A; padding: 20px; color: white; text-align: center;">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        <p style="margin: 0;">Copyright © 2024 Wisconsin Accessible Birding Atlas. All rights reserved.</p>
-        <img src="./assets/img/logo.png" alt="logo" height="75px" style="margin-top: 10px;">
-      </div>
+  <footer class="footer mt-5" style="background-color: #1A4D7A; padding: 20px; color: white; text-align: center;">
+    <div class="container">
+      <p>Copyright © 2024 Wisconsin Accessible Birding Atlas. All rights reserved.</p>
+      <img src="./assets/img/logo.png" alt="logo" height="75px" style="margin-top: 10px;">
     </div>
-  </div>
-</footer>
+  </footer>
 
-  <!-- Bootstrap JS (for Navbar Toggle) -->
+  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
