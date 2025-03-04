@@ -46,6 +46,8 @@ document.addEventListener("DOMContentLoaded", function () {
             const birdabilityDetails = document.getElementById("birdability-details");
             const accessibilityFields = [
                 { field: "car_birding", label: "Car Birding" },
+                { field: "walkbike_info", label: "Walking or Biking Acess from Nearby Residential Areas" },
+                { field: "transport_info", label: "Public Transportation" },
                 { field: "park_fee", label: "Parking or Entrance Fee" },
                 { field: "parking_info", label: "Parking Information" },
                 { field: "bathroom_info", label: "Bathrooms" },
