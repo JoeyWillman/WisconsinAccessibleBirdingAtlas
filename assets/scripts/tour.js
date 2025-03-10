@@ -112,34 +112,37 @@ document.addEventListener("DOMContentLoaded", function () {
             osmLayer.addTo(tourMap);
 
             // Add a toggle button for switching basemaps
-const toggleButton = L.control({ position: "bottomleft" }); // Keep it bottom left
+const toggleButton = L.control({ position: "topright" }); // Keep it in the bottom left
 toggleButton.onAdd = function () {
     const div = L.DomUtil.create("div", "toggle-button");
     div.innerHTML = `<button id="basemap-toggle" style="padding: 5px 10px; font-size: 14px; cursor: pointer;">Switch to Satellite</button>`;
     
-    // Apply margin to move the button up
-    div.style.marginBottom = "15px"; // Moves it up by 10px
+    // Apply margin to move it above the service layer credits
+    div.style.marginTop = "50px"; // Adjust this value to move it higher
+    div.style.marginLeft = "10px"; // Slight left spacing to keep it neat
 
     return div;
 };
 toggleButton.addTo(tourMap);
 
 
-            // Handle basemap toggle functionality
-            let currentLayer = osmLayer;
-            document.getElementById("basemap-toggle").addEventListener("click", function () {
-                if (currentLayer === osmLayer) {
-                    tourMap.removeLayer(osmLayer);
-                    satelliteLayer.addTo(tourMap);
-                    currentLayer = satelliteLayer;
-                    this.textContent = "Switch to OSM";
-                } else {
-                    tourMap.removeLayer(satelliteLayer);
-                    osmLayer.addTo(tourMap);
-                    currentLayer = osmLayer;
-                    this.textContent = "Switch to Satellite";
-                }
-            });
+           // Handle basemap toggle functionality
+let currentLayer = osmLayer;
+document.getElementById("basemap-toggle").addEventListener("click", function (e) {
+    e.preventDefault(); // Prevent page jump
+
+    if (currentLayer === osmLayer) {
+        tourMap.removeLayer(osmLayer);
+        satelliteLayer.addTo(tourMap);
+        currentLayer = satelliteLayer;
+        this.innerHTML = "🛰️"; // Change icon to satellite
+    } else {
+        tourMap.removeLayer(satelliteLayer);
+        osmLayer.addTo(tourMap);
+        currentLayer = osmLayer;
+        this.innerHTML = "🗺️"; // Change back to map icon
+    }
+});
 
             // Locate Me Functionality
             let locationMarker;
