@@ -112,13 +112,18 @@ document.addEventListener("DOMContentLoaded", function () {
             osmLayer.addTo(tourMap);
 
             // Add a toggle button for switching basemaps
-            const toggleButton = L.control({ position: "bottomleft" });
-            toggleButton.onAdd = function () {
-                const div = L.DomUtil.create("div", "toggle-button");
-                div.innerHTML = `<button id="basemap-toggle" style="padding: 5px 10px; font-size: 14px; cursor: pointer;">Switch to Satellite</button>`;
-                return div;
-            };
-            toggleButton.addTo(tourMap);
+const toggleButton = L.control({ position: "bottomleft" }); // Keep it bottom left
+toggleButton.onAdd = function () {
+    const div = L.DomUtil.create("div", "toggle-button");
+    div.innerHTML = `<button id="basemap-toggle" style="padding: 5px 10px; font-size: 14px; cursor: pointer;">Switch to Satellite</button>`;
+    
+    // Apply margin to move the button up
+    div.style.marginBottom = "15px"; // Moves it up by 10px
+
+    return div;
+};
+toggleButton.addTo(tourMap);
+
 
             // Handle basemap toggle functionality
             let currentLayer = osmLayer;
