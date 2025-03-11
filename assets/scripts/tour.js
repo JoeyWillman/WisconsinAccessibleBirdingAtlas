@@ -43,10 +43,86 @@ document.addEventListener("DOMContentLoaded", function () {
                 .map((detail) => `<div><strong>${detail.label}:</strong> ${detail.value}</div>`)
                 .join("");
 
+            // Initialize map
+            const lat = parseFloat(site.lat);
+            const lon = parseFloat(site.long);
+
+            if (isNaN(lat) || isNaN(lon)) {
+                document.getElementById("tour-map-container").innerHTML = "<p style='color: red;'>Invalid location data. Map cannot load.</p>";
+                return;
+            }
+
+            const tourMap = L.map("tour-map").setView([lat, lon], 14);
+
+            // Define the base layers
+            const osmLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                attribution: "&copy; OpenStreetMap contributors",
+            });
+
+            const satelliteLayer = L.tileLayer(
+                "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
+                {
+                    attribution: "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
+                }
+            );
+
+            osmLayer.addTo(tourMap);
+
+            // Load points and trails from points.csv
+            fetch("assets/data/points.csv")
+                .then((res) => res.text())
+                .then((data) => {
+                    let points = Papa.parse(data, { header: true }).data;
+                    points.forEach((point) => {
+                        if (point.site_id.trim() === siteId.trim()) {
+                            if (point.type === "Trail" && point.filename) {
+                                // Load trail GeoJSON
+                                let trailUrl = `assets/data/trails/${point.filename}.geojson`;
+
+                                fetch(trailUrl)
+                                    .then((res) => res.json())
+                                    .then((geojsonData) => {
+                                        L.geoJSON(geojsonData, {
+                                            style: {
+                                                color: "blue",
+                                                weight: 4,
+                                                opacity: 0.7
+                                            }
+                                        }).addTo(tourMap)
+                                          .bindPopup(`<strong>${point.name}</strong><br>${point.description || "No description available."}`);
+                                    })
+                                    .catch((error) => console.error(`❌ Error loading trail GeoJSON: ${trailUrl}`, error));
+                            } else {
+                                // Load points with icons
+                                let pointLat = parseFloat(point.lat);
+                                let pointLon = parseFloat(point.lon);
+                                if (!isNaN(pointLat) && !isNaN(pointLon)) {
+                                    let iconUrl = `assets/icons/${point.type}.png`;
+                                    let customIcon = L.icon({
+                                        iconUrl: iconUrl,
+                                        iconSize: [20, 20],
+                                        iconAnchor: [16, 32], 
+                                        popupAnchor: [0, -32],
+                                    });
+
+                                    let popupContent = `<strong>${point.name}</strong><br>${point.description || "No description available."}`;
+                                    L.marker([pointLat, pointLon], { icon: customIcon })
+                                        .addTo(tourMap)
+                                        .bindPopup(popupContent);
+                                }
+                            }
+                        }
+                    });
+                })
+                .catch((error) => console.error("❌ Error loading points data:", error));
+
+            console.log("✅ Map initialized, points and trails loaded.");
+
+            // Accessibility Information
             const birdabilityDetails = document.getElementById("birdability-details");
             const accessibilityFields = [
                 { field: "car_birding", label: "Car Birding" },
-                { field: "walkbike_info", label: "Walking or Biking Acess from Nearby Residential Areas" },
+                { field: "walkbike_info", label: "Walking or Biking Access from Nearby Residential Areas" },
                 { field: "transport_info", label: "Public Transportation" },
                 { field: "park_fee", label: "Parking or Entrance Fee" },
                 { field: "parking_info", label: "Parking Information" },
@@ -85,97 +161,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 ? accessibilityContent
                 : "<p>No accessibility information available for this site.</p>";
 
-            // Initialize map
-            const lat = parseFloat(site.lat);
-            const lon = parseFloat(site.long);
-
-            if (isNaN(lat) || isNaN(lon)) {
-                document.getElementById("tour-map-container").innerHTML = "<p style='color: red;'>Invalid location data. Map cannot load.</p>";
-                return;
-            }
-
-            const tourMap = L.map("tour-map").setView([lat, lon], 14);
-
-            // Define the base layers
-            const osmLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-                attribution: "&copy; OpenStreetMap contributors",
-            });
-
-            const satelliteLayer = L.tileLayer(
-                "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",
-                {
-                    attribution: "Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community",
-                }
-            );
-
-            // Add the default layer (OSM)
-            osmLayer.addTo(tourMap);
-
-            // Add a toggle button for switching basemaps
-const toggleButton = L.control({ position: "topright" }); // Keep it in the bottom left
-toggleButton.onAdd = function () {
-    const div = L.DomUtil.create("div", "toggle-button");
-    div.innerHTML = `<button id="basemap-toggle" style="padding: 5px 10px; font-size: 14px; cursor: pointer;">Switch to Satellite</button>`;
-    
-    // Apply margin to move it above the service layer credits
-    div.style.marginTop = "50px"; // Adjust this value to move it higher
-    div.style.marginLeft = "10px"; // Slight left spacing to keep it neat
-
-    return div;
-};
-toggleButton.addTo(tourMap);
-
-
-           // Handle basemap toggle functionality
-let currentLayer = osmLayer;
-document.getElementById("basemap-toggle").addEventListener("click", function (e) {
-    e.preventDefault(); // Prevent page jump
-
-    if (currentLayer === osmLayer) {
-        tourMap.removeLayer(osmLayer);
-        satelliteLayer.addTo(tourMap);
-        currentLayer = satelliteLayer;
-        this.innerHTML = "🛰️"; // Change icon to satellite
-    } else {
-        tourMap.removeLayer(satelliteLayer);
-        osmLayer.addTo(tourMap);
-        currentLayer = osmLayer;
-        this.innerHTML = "🗺️"; // Change back to map icon
-    }
-});
-
-            // Locate Me Functionality
-            let locationMarker;
-            let circle;
-
-            function getLocation() {
-                tourMap.locate({ setView: true, watch: true, enableHighAccuracy: true });
-
-                function onLocationFound(e) {
-                    let radius = e.accuracy / 2;
-
-                    if (locationMarker) {
-                        tourMap.removeLayer(locationMarker);
-                        tourMap.removeLayer(circle);
-                    }
-
-                    locationMarker = L.marker(e.latlng).addTo(tourMap);
-                    circle = L.circle(e.latlng, { radius: radius }).addTo(tourMap);
-
-                    if (e.accuracy < 40) {
-                        tourMap.stopLocate();
-                    }
-                }
-
-                tourMap.on("locationfound", onLocationFound);
-
-                window.setInterval(function () {
-                    tourMap.locate({ setView: false, enableHighAccuracy: true });
-                }, 2500);
-            }
-
-            document.getElementById("locate-btn").addEventListener("click", getLocation);
-
             // Observation tool
             let ebirdId = site.ebird_id ? site.ebird_id.trim() : null;
             if (ebirdId) {
@@ -213,29 +198,7 @@ document.getElementById("basemap-toggle").addEventListener("click", function (e)
                 });
             }
 
-            // Fullscreen functionality
-            const fullscreenBtn = document.getElementById("fullscreen-btn");
-            const mapContainer = document.getElementById("tour-map-container");
-
-            fullscreenBtn.addEventListener("click", () => {
-                if (!document.fullscreenElement) {
-                    mapContainer.requestFullscreen().catch((err) => {
-                        console.error(`Error attempting to enable fullscreen: ${err.message}`);
-                    });
-                    fullscreenBtn.textContent = "Exit Fullscreen";
-                } else {
-                    document.exitFullscreen();
-                    fullscreenBtn.textContent = "Fullscreen";
-                }
-            });
-
-            document.addEventListener("fullscreenchange", () => {
-                if (!document.fullscreenElement) {
-                    fullscreenBtn.textContent = "Fullscreen";
-                }
-            });
-
-            console.log("✅ Fullscreen, Locate Me, Observations, and Basemap Toggle functionalities added.");
+            console.log("✅ Full functionality restored with points, trails, and observations.");
         })
         .catch((error) => console.error("❌ Error loading site data:", error));
 });
