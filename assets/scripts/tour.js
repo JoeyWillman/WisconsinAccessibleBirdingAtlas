@@ -145,7 +145,7 @@ document.addEventListener("DOMContentLoaded", function () {
             ];
 
             const accessibilityContent = accessibilityFields
-                .map((item) => {
+                .map((item) => {s
                     const value = site[item.field];
                     if (value && value.trim()) {
                         return `<div class="accessibility-item">
