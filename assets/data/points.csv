@@ -1,8 +1,8 @@
 id,site_id,type,filename,name,lat,lon,description,image
 1,8,bathroom,,Bathroom,43.0872,-89.42,Male/Female Pit Toilets,
-2,8,parking lot,,Parking Lot,43.0843,-89.4296,Paid Parking M-F,
-3,8,bus stop,,University Bay & Picnic Point (EB),43.0843,-89.4291,,
-4,8,bus stop,,University Bay & Picnic Point (WB),43.0843,-89.4289,,
+2,8,parkinglot,,Parking Lot,43.0843,-89.4296,Paid Parking M-F,
+3,8,busstop,,University Bay & Picnic Point (EB),43.0843,-89.4291,,
+4,8,busstop,,University Bay & Picnic Point (WB),43.0843,-89.4289,,
 5,8,birdpoi,,University Bay,43.0837,-89.4248,Hotspot for migratory waterfowl,
 6,8,birdpoi,,Picnic Point Marsh,43.0867,-89.4226,"Hotspot for marsh birds, woodpeckers, and waterfowl. Highlights include Red Headed Woodpecker, Pileated Woodpecker, Wood Ducks, and more.",
 7,8,trail,lsnpparkingtopp,Parking Lot to Picnic Point,,,"Mostly Crushed Stone, Eroded in some places, can be wet and muddy in winter and early spring. ",
