@@ -105,7 +105,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             console.log("✅ Map initialized, points and trails loaded.");
 
-            // Accessibility Information
+            // Accessibility Information!
             const birdabilityDetails = document.getElementById("birdability-details");
             if (birdabilityDetails) {
                 const accessibilityFields = [
@@ -165,7 +165,7 @@ contactContainer.innerHTML = `
     </a>
 `;
 
-// Insert the new contact notice **after** the accessibility section
+// Insert the new contact notice **after** the accessibility section pleaaaaasse
 parentContainer.appendChild(contactContainer);
 // Observation tool
 let ebirdId = site.ebird_id ? site.ebird_id.trim() : null;
