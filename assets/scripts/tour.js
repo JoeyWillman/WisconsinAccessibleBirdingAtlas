@@ -67,7 +67,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     let points = Papa.parse(data, { header: true }).data;
                     points.forEach((point) => {
                         if (point.site_id.trim() === siteId.trim()) {
-                            if (point.type === "Trail" && point.filename) {
+                            if (point.type === "trail" && point.filename) {
                                 let trailUrl = `assets/data/trails/${point.filename}.geojson`;
 
                                 fetch(trailUrl)
