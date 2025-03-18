@@ -43,22 +43,32 @@ document.addEventListener("DOMContentLoaded", function () {
                 .map((detail) => `<div><strong>${detail.label}:</strong> ${detail.value}</div>`)
                 .join("");
 
-            // Initialize map
-            const lat = parseFloat(site.lat);
-            const lon = parseFloat(site.long);
+           // Initialize map
+           const lat = parseFloat(site.lat);
+           const lon = parseFloat(site.long);
 
-            if (isNaN(lat) || isNaN(lon)) {
-                document.getElementById("tour-map-container").innerHTML = "<p style='color: red;'>Invalid location data. Map cannot load.</p>";
-                return;
-            }
+           if (isNaN(lat) || isNaN(lon)) {
+               document.getElementById("tour-map-container").innerHTML = "<p style='color: red;'>Invalid location data. Map cannot load.</p>";
+               return;
+           }
 
-            const tourMap = L.map("tour-map").setView([lat, lon], 14);
+           const tourMap = L.map("tour-map").setView([lat, lon], 14);
 
-            const osmLayer = L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-                attribution: "&copy; OpenStreetMap contributors",
-            });
+           // Define basemap layers
+           var basemaps = {
+               "OpenStreetMap": L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                   attribution: '&copy; OpenStreetMap contributors'
+               }),
+               "Satellite": L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+                   attribution: '&copy; OpenTopoMap'
+               }),
+               "Gray Scale": L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+                   attribution: '&copy; CartoDB'
+               })
+           };
 
-            osmLayer.addTo(tourMap);
+           // Add the default basemap (OpenStreetMap)
+           basemaps["OpenStreetMap"].addTo(tourMap);
 
             // Load points and trails
 fetch("assets/data/points.csv")
@@ -267,6 +277,7 @@ if (ebirdId) {
                                     iconSize: [25, 25],
                                     iconAnchor: [12, 25],
                                     popupAnchor: [0, -25],
+                                    
                                 }),
                             }).addTo(tourMap);
 
@@ -282,6 +293,124 @@ if (ebirdId) {
                     );
                 });
             }
+
+            // Create a control for the basemap button in the bottom-left corner
+var basemapControl = L.control({ position: "bottomleft" });
+
+basemapControl.onAdd = function () {
+    var div = L.DomUtil.create("div", "leaflet-control-basemap leaflet-bar");
+    div.innerHTML = `
+        <button id="basemap-toggle" class="leaflet-control-button">Basemaps</button>
+        <div id="basemap-menu" class="basemap-menu hidden">
+            <button class="basemap-option" data-layer="OpenStreetMap">OpenStreetMap</button>
+            <button class="basemap-option" data-layer="Satellite">Satellite</button>
+            <button class="basemap-option" data-layer="GrayScale">Gray Scale</button>
+        </div>
+    `;
+    return div;
+};
+
+// Add the basemap control to the map **before attaching event listeners**
+basemapControl.addTo(tourMap);
+
+// Wait for DOM to be fully loaded before adding event listeners
+setTimeout(() => {
+    const basemapToggle = document.getElementById("basemap-toggle");
+    const basemapMenu = document.getElementById("basemap-menu");
+
+    // Ensure elements exist before attaching event listeners
+    if (basemapToggle && basemapMenu) {
+        basemapToggle.addEventListener("click", function () {
+            basemapMenu.classList.toggle("hidden"); // Toggle menu visibility
+        });
+
+        // Define basemaps
+        const basemaps = {
+            OpenStreetMap: L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                attribution: "&copy; OpenStreetMap contributors"
+            }),
+            Satellite: L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}", {
+                attribution: "&copy; Esri & NASA"
+            }),
+            GrayScale: L.tileLayer("https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png", {
+                attribution: "&copy; Stadia Maps"
+            })
+        };
+
+        let currentBasemap = basemaps.OpenStreetMap; // Default basemap
+        currentBasemap.addTo(tourMap);
+
+        // Change basemap without removing trails and markers
+        document.querySelectorAll(".basemap-option").forEach((button) => {
+            button.addEventListener("click", function () {
+                let selectedLayer = this.getAttribute("data-layer");
+
+                // Remove only the basemap, not the whole map layers
+                tourMap.eachLayer((layer) => {
+                    if (layer.options && layer.options.attribution) {
+                        tourMap.removeLayer(layer);
+                    }
+                });
+
+                currentBasemap = basemaps[selectedLayer];
+                currentBasemap.addTo(tourMap);
+
+                // Close menu after selection
+                basemapMenu.classList.add("hidden");
+            });
+        });
+    } else {
+        console.error("❌ Basemap menu or toggle button not found.");
+    }
+}, 500); // Small delay to ensure menu is added before event listeners are attached
+
+// CSS for Basemap Menu
+var style = document.createElement("style");
+style.innerHTML = `
+    .leaflet-control-button {
+        background-color: white;
+        border: 1px solid #ccc;
+        padding: 8px;
+        cursor: pointer;
+        border-radius: 4px;
+        font-size: 14px;
+    }
+    .basemap-menu {
+        background: white;
+        padding: 10px;
+        position: absolute;
+        bottom: 50px;
+        left: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        display: flex;
+        flex-direction: column;
+        z-index: 1000;
+    }
+    .hidden {
+        display: none;
+    }
+    .basemap-option {
+        background: none;
+        border: none;
+        padding: 5px;
+        text-align: left;
+        cursor: pointer;
+        font-size: 14px;
+    }
+    .basemap-option:hover {
+        background: #f0f0f0;
+    }
+        /* Hide Leaflet map controls when the menu is open */
+.navbar-collapse.show ~ #tour-map .leaflet-control-container {
+  display: none;
+}
+.leaflet-marker-icon {
+  filter: drop-shadow(0px 0px 1px white) drop-shadow(0px 0px 1px white);
+}
+`;
+document.head.appendChild(style);
             
 
 
