@@ -60,7 +60,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
             osmLayer.addTo(tourMap);
 
-            // Load points and trails from points.csv
+            // Load points and trails
             fetch("assets/data/points.csv")
                 .then((res) => res.text())
                 .then((data) => {
@@ -68,24 +68,18 @@ document.addEventListener("DOMContentLoaded", function () {
                     points.forEach((point) => {
                         if (point.site_id.trim() === siteId.trim()) {
                             if (point.type === "Trail" && point.filename) {
-                                // Load trail GeoJSON
                                 let trailUrl = `assets/data/trails/${point.filename}.geojson`;
 
                                 fetch(trailUrl)
                                     .then((res) => res.json())
                                     .then((geojsonData) => {
                                         L.geoJSON(geojsonData, {
-                                            style: {
-                                                color: "blue",
-                                                weight: 4,
-                                                opacity: 0.7
-                                            }
+                                            style: { color: "blue", weight: 4, opacity: 0.7 }
                                         }).addTo(tourMap)
                                           .bindPopup(`<strong>${point.name}</strong><br>${point.description || "No description available."}`);
                                     })
                                     .catch((error) => console.error(`❌ Error loading trail GeoJSON: ${trailUrl}`, error));
                             } else {
-                                // Load points with icons
                                 let pointLat = parseFloat(point.lat);
                                 let pointLon = parseFloat(point.lon);
                                 if (!isNaN(pointLat) && !isNaN(pointLon)) {
@@ -106,10 +100,10 @@ document.addEventListener("DOMContentLoaded", function () {
                         }
                     });
                 })
-                .catch((error) => console.error("❌ Error loading points data:", error));
+.catch((error) => console.error("❌ Error loading points data:", error));
 
-console.log("✅ Map initialized, points and trails loaded.");
 
+            console.log("✅ Map initialized, points and trails loaded.");
 
             // Accessibility Information
             const birdabilityDetails = document.getElementById("birdability-details");
@@ -138,18 +132,13 @@ console.log("✅ Map initialized, points and trails loaded.");
                     { field: "other_info", label: "Other Information" }
                 ];
 
-            const accessibilityContent = accessibilityFields
-                .map((item) => {s
-                    const value = site[item.field];
-                    if (value && value.trim()) {
-                        return `<div class="accessibility-item">
-                                    <strong>${item.label}:</strong> ${value}
-                                </div>`;
-                    }
-                    return null;
-                })
-                .filter(Boolean)
-                .join("");
+                const accessibilityContent = accessibilityFields
+                    .map((item) => {
+                        const value = site[item.field];
+                        return value && value.trim() ? `<div><strong>${item.label}:</strong> ${value}</div>` : null;
+                    })
+                    .filter(Boolean)
+                    .join("");
 
                 birdabilityDetails.innerHTML = accessibilityContent || "<p>No accessibility information available.</p>";
             }
