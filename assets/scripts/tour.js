@@ -60,59 +60,56 @@ document.addEventListener("DOMContentLoaded", function () {
 
             osmLayer.addTo(tourMap);
 
-            // Load points and trails
-fetch("assets/data/points.csv")
-.then((res) => res.text())
-.then((data) => {
-    let points = Papa.parse(data, { header: true }).data;
-    let allTrailLayers = []; // Array to store all trail layers
+            // Load points and trails from points.csv
+            fetch("assets/data/points.csv")
+                .then((res) => res.text())
+                .then((data) => {
+                    let points = Papa.parse(data, { header: true }).data;
+                    points.forEach((point) => {
+                        if (point.site_id.trim() === siteId.trim()) {
+                            if (point.type === "Trail" && point.filename) {
+                                // Load trail GeoJSON
+                                let trailUrl = `assets/data/trails/${point.filename}.geojson`;
 
-    points.forEach((point) => {
-        if (point.site_id.trim() === siteId.trim()) {
-            if (point.type === "Trail" && point.filename) {
-                let trailUrl = `assets/data/trails/${point.filename}.geojson`;
+                                fetch(trailUrl)
+                                    .then((res) => res.json())
+                                    .then((geojsonData) => {
+                                        L.geoJSON(geojsonData, {
+                                            style: {
+                                                color: "blue",
+                                                weight: 4,
+                                                opacity: 0.7
+                                            }
+                                        }).addTo(tourMap)
+                                          .bindPopup(`<strong>${point.name}</strong><br>${point.description || "No description available."}`);
+                                    })
+                                    .catch((error) => console.error(`❌ Error loading trail GeoJSON: ${trailUrl}`, error));
+                            } else {
+                                // Load points with icons
+                                let pointLat = parseFloat(point.lat);
+                                let pointLon = parseFloat(point.lon);
+                                if (!isNaN(pointLat) && !isNaN(pointLon)) {
+                                    let iconUrl = `assets/icons/${point.type}.png`;
+                                    let customIcon = L.icon({
+                                        iconUrl: iconUrl,
+                                        iconSize: [20, 20],
+                                        iconAnchor: [16, 32], 
+                                        popupAnchor: [0, -32],
+                                    });
 
-                fetch(trailUrl)
-                    .then((res) => res.json())
-                    .then((geojsonData) => {
-                        let trailLayer = L.geoJSON(geojsonData, {
-                            style: { color: "blue", weight: 4, opacity: 0.7 }
-                        }).addTo(tourMap)
-                          .bindPopup(`<strong>${point.name}</strong><br>${point.description || "No description available."}`);
-
-                        allTrailLayers.push(trailLayer);
-
-                        // Adjust map view based on trail bounds
-                        if (trailLayer.getBounds().isValid()) {
-                            tourMap.fitBounds(trailLayer.getBounds());
+                                    let popupContent = `<strong>${point.name}</strong><br>${point.description || "No description available."}`;
+                                    L.marker([pointLat, pointLon], { icon: customIcon })
+                                        .addTo(tourMap)
+                                        .bindPopup(popupContent);
+                                }
+                            }
                         }
-                    })
-                    .catch((error) => console.error(`❌ Error loading trail GeoJSON: ${trailUrl}`, error));
-            } else {
-                let pointLat = parseFloat(point.lat);
-                let pointLon = parseFloat(point.lon);
-                if (!isNaN(pointLat) && !isNaN(pointLon)) {
-                    let iconUrl = `assets/icons/${point.type}.png`;
-                    let customIcon = L.icon({
-                        iconUrl: iconUrl,
-                        iconSize: [20, 20],
-                        iconAnchor: [10, 10], 
-                        popupAnchor: [0, -10],
                     });
+                })
+                .catch((error) => console.error("❌ Error loading points data:", error));
 
-                    let popupContent = `<strong>${point.name}</strong><br>${point.description || "No description available."}`;
-                    L.marker([pointLat, pointLon], { icon: customIcon })
-                        .addTo(tourMap)
-                        .bindPopup(popupContent);
-                }
-            }
-        }
-    });
-})
-.catch((error) => console.error("❌ Error loading points data:", error));
+console.log("✅ Map initialized, points and trails loaded.");
 
-
-            console.log("✅ Map initialized, points and trails loaded.");
 
             // Accessibility Information
             const birdabilityDetails = document.getElementById("birdability-details");
@@ -141,13 +138,18 @@ fetch("assets/data/points.csv")
                     { field: "other_info", label: "Other Information" }
                 ];
 
-                const accessibilityContent = accessibilityFields
-                    .map((item) => {
-                        const value = site[item.field];
-                        return value && value.trim() ? `<div><strong>${item.label}:</strong> ${value}</div>` : null;
-                    })
-                    .filter(Boolean)
-                    .join("");
+            const accessibilityContent = accessibilityFields
+                .map((item) => {s
+                    const value = site[item.field];
+                    if (value && value.trim()) {
+                        return `<div class="accessibility-item">
+                                    <strong>${item.label}:</strong> ${value}
+                                </div>`;
+                    }
+                    return null;
+                })
+                .filter(Boolean)
+                .join("");
 
                 birdabilityDetails.innerHTML = accessibilityContent || "<p>No accessibility information available.</p>";
             }
