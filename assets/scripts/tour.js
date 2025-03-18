@@ -61,51 +61,60 @@ document.addEventListener("DOMContentLoaded", function () {
             osmLayer.addTo(tourMap);
 
             // Load points and trails
-            fetch("assets/data/points.csv")
-                .then((res) => res.text())
-                .then((data) => {
-                    let points = Papa.parse(data, { header: true }).data;
-                    points.forEach((point) => {
-                        if (point.site_id.trim() === siteId.trim()) {
-                            if (point.type === "trail" && point.filename) {
-                                let trailUrl = `assets/data/trails/${point.filename}.geojson`;
+fetch("assets/data/points.csv")
+.then((res) => res.text())
+.then((data) => {
+    let points = Papa.parse(data, { header: true }).data;
+    let allTrailLayers = []; // Array to store all trail layers
 
-                                fetch(trailUrl)
-                                    .then((res) => res.json())
-                                    .then((geojsonData) => {
-                                        L.geoJSON(geojsonData, {
-                                            style: { color: "blue", weight: 4, opacity: 0.7 }
-                                        }).addTo(tourMap)
-                                          .bindPopup(`<strong>${point.name}</strong><br>${point.description || "No description available."}`);
-                                    })
-                                    .catch((error) => console.error(`❌ Error loading trail GeoJSON: ${trailUrl}`, error));
-                            } else {
-                                let pointLat = parseFloat(point.lat);
-                                let pointLon = parseFloat(point.lon);
-                                if (!isNaN(pointLat) && !isNaN(pointLon)) {
-                                    let iconUrl = `assets/icons/${point.type}.png`;
-                                    let customIcon = L.icon({
-                                        iconUrl: iconUrl,
-                                        iconSize: [20, 20],
-                                        iconAnchor: [16, 32], 
-                                        popupAnchor: [0, -32],
-                                    });
+    points.forEach((point) => {
+        if (point.site_id.trim() === siteId.trim()) {
+            if (point.type === "trail" && point.filename) {
+                let trailUrl = `assets/data/trails/${point.filename}.geojson`;
 
-                                    let popupContent = `<strong>${point.name}</strong><br>${point.description || "No description available."}`;
-                                    L.marker([pointLat, pointLon], { icon: customIcon })
-                                        .addTo(tourMap)
-                                        .bindPopup(popupContent);
-                                }
-                            }
+                fetch(trailUrl)
+                    .then((res) => res.json())
+                    .then((geojsonData) => {
+                        let trailLayer = L.geoJSON(geojsonData, {
+                            style: { color: "blue", weight: 4, opacity: 0.7 }
+                        }).addTo(tourMap)
+                          .bindPopup(`<strong>${point.name}</strong><br>${point.description || "No description available."}`);
+
+                        allTrailLayers.push(trailLayer);
+
+                        // Adjust map view based on trail bounds
+                        if (trailLayer.getBounds().isValid()) {
+                            tourMap.fitBounds(trailLayer.getBounds());
                         }
+                    })
+                    .catch((error) => console.error(`❌ Error loading trail GeoJSON: ${trailUrl}`, error));
+            } else {
+                let pointLat = parseFloat(point.lat);
+                let pointLon = parseFloat(point.lon);
+                if (!isNaN(pointLat) && !isNaN(pointLon)) {
+                    let iconUrl = `assets/icons/${point.type}.png`;
+                    let customIcon = L.icon({
+                        iconUrl: iconUrl,
+                        iconSize: [20, 20],
+                        iconAnchor: [16, 32], 
+                        popupAnchor: [0, -32],
                     });
-                })
+
+                    let popupContent = `<strong>${point.name}</strong><br>${point.description || "No description available."}`;
+                    L.marker([pointLat, pointLon], { icon: customIcon })
+                        .addTo(tourMap)
+                        .bindPopup(popupContent);
+                }
+            }
+        }
+    });
+})
 .catch((error) => console.error("❌ Error loading points data:", error));
 
 
             console.log("✅ Map initialized, points and trails loaded.");
 
-            // Accessibility Information
+            // Accessibility Information!
             const birdabilityDetails = document.getElementById("birdability-details");
             if (birdabilityDetails) {
                 const accessibilityFields = [
@@ -165,7 +174,7 @@ contactContainer.innerHTML = `
     </a>
 `;
 
-// Insert the new contact notice **after** the accessibility section
+// Insert the new contact notice **after** the accessibility section pleaaaaasse
 parentContainer.appendChild(contactContainer);
 // Observation tool
 let ebirdId = site.ebird_id ? site.ebird_id.trim() : null;
