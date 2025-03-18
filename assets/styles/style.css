@@ -951,3 +951,14 @@ box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
     .footer p {
       margin: 0;
     }
+
+    /* Ensure the hamburger menu appears above the map */
+.navbar-collapse {
+  position: relative;
+  z-index: 1050; /* Higher than Leaflet buttons */
+}
+
+/* Hide Leaflet map controls when the menu is open */
+.navbar-collapse.show ~ #tour-map .leaflet-control-container {
+  display: none;
+}
