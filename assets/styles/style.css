@@ -2,11 +2,7 @@ body {
     font-family: Arial, sans-serif;
     text-align: center;
 }
-#map {
-    height: 600px;
-    width: 80%;
-    margin: 0 auto;
-}
+
 
 /* --------------------------- */
 /*        Global Styles        */
@@ -411,11 +407,7 @@ body {
   font-family: Arial, sans-serif;
   text-align: center;
 }
-#map {
-  height: 600px;
-  width: 80%;
-  margin: 0 auto;
-}
+
 
 /* --------------------------- */
 /*        Global Styles        */
@@ -961,3 +953,48 @@ box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 .navbar-collapse.show ~ #tour-map .leaflet-control-container {
   display: none;
 }
+
+/* --------------------------- */
+/*   Updated Map Wrapper Fix   */
+/* --------------------------- */
+
+#map-wrapper {
+  display: flex;
+  width: 95%;
+  max-width: 1600px;
+  height: 600px; /* smaller to fit screen */
+  margin: 30px auto;
+  border: 3px solid #1A4D7A;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: white;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+#filter-panel {
+  width: 270px;
+  padding: 20px;
+  background-color: #ffffff;
+  font-size: 14px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  border-right: 2px solid #1B6CA7; /* Divider */
+}
+
+#filter-panel h4 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #1B6CA7;
+  margin-bottom: 15px;
+}
+
+.filter-group {
+  margin-bottom: 10px;
+}
+
+
+
+
+

@@ -37,23 +37,11 @@
       flex: 1;
     }
 
-    #map-container {
-      width: 95%;
-      height: 635px;
-      max-width: 1800px;
-      margin: 20px auto;
-      padding: 15px;
-      border: 3px solid #1A4D7A;
-      border-radius: 10px;
-      background: #ffffff;
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-    }
-
-    #map {
-      height: 600px;
-      width: 100%;
-      border-radius: 8px;
-    }
+    #map-wrapper {
+    border: 3px solid #1B6CA7 !important;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  }
 
     .map-instructions {
       text-align: center;
@@ -99,9 +87,48 @@
 
   <!-- Main Content -->
   <main>
-    <div id="map-container">
+    <div id="map-wrapper">
+      <div id="filter-panel">
+        <h4>Accessibility Filters</h4>
+        <div class="filter-group">
+          <input type="checkbox" class="filter-box" data-field="walkbike_info" id="walkbike_info">
+          <label for="walkbike_info">Walking/Biking Access</label>
+        </div>
+        <div class="filter-group">
+          <input type="checkbox" class="filter-box" data-field="transport_info" id="transport_info">
+          <label for="transport_info">Public Transportation</label>
+        </div>
+        <div class="filter-group">
+          <input type="checkbox" class="filter-box" data-field="parking_info" id="parking_info">
+          <label for="parking_info">Parking</label>
+        </div>
+        <div class="filter-group">
+          <input type="checkbox" class="filter-box" data-field="bathroom_info" id="bathroom_info">
+          <label for="bathroom_info">Bathrooms</label>
+        </div>
+        <div class="filter-group">
+          <input type="checkbox" class="filter-box" data-field="ramp_info" id="ramp_info">
+          <label for="ramp_info">Ramps</label>
+        </div>
+        <div class="filter-group">
+          <input type="checkbox" class="filter-box" data-field="step_info" id="step_info">
+          <label for="step_info">No Steps</label>
+        </div>
+        <div class="filter-group">
+          <input type="checkbox" class="filter-box" data-field="bench_info" id="bench_info">
+          <label for="bench_info">Benches</label>
+        </div>
+        <div class="filter-group">
+          <input type="checkbox" class="filter-box" data-field="car_birding" id="car_birding">
+          <label for="car_birding">Car Birding</label>
+        </div>
+        <button id="apply-filters" class="btn btn-sm btn-primary mt-2">Apply Filters</button>
+      </div>
+    
       <div id="map"></div>
     </div>
+    
+    
 
     <div class="map-instructions">
       <h3>How to Use This Map</h3>
