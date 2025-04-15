@@ -1,68 +1,83 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Accessible Birding Atlas of Wisconsin</title>
-  
+
   <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
   <!-- Custom CSS -->
-  <link rel="stylesheet" href="assets/styles/style.css">
+  <link rel="stylesheet" href="assets/styles/style.css"/>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Coiny&family=Radio+Canada&display=swap" rel="stylesheet">
-          <style>
-            .coiny-regular {
-              font-family: "Radio Canada", sans-serif;
-              font-weight: 400;
-              font-style: normal;
-            }
-        
-            body {
-              font-family: "Radio Canada", sans-serif;
-            }
-          </style>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Coiny&family=Radio+Canada&display=swap" rel="stylesheet"/>
+
+  <!-- Inline Fixes -->
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      font-family: "Radio Canada", sans-serif;
+    }
+
+    main {
+      flex: 1;
+    }
+
+    .coiny-regular {
+      font-family: "Radio Canada", sans-serif;
+      font-weight: 400;
+      font-style: normal;
+    }
+  </style>
 </head>
+
 <body>
-  
- <!-- Navbar -->
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
-    <!-- Logo and Title in a Flex Container -->
-    <div class="d-flex align-items-center">
-      <a href="index.html">
-        <img src="assets/img/logo.png" alt="Logo" class="navbar-logo">
-      </a>
-      <a class="navbar-brand" href="index.html">Wisconsin Accessible Birding Atlas</a>
-    </div>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <div class="d-flex align-items-center">
+        <a href="index.html">
+          <img src="assets/img/logo.png" alt="Logo" class="navbar-logo" />
+        </a>
+        <a class="navbar-brand" href="index.html">Wisconsin Accessible Birding Atlas</a>
+      </div>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
 
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="map.html">Map</a></li>
-        <li class="nav-item"><a class="nav-link" href="submit.html">Submit a Site</a></li>
-        <li class="nav-item"><a class="nav-link" href="resources.html">Resources</a></li>
-        <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
-        <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-      </ul>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="map.html">Map</a></li>
+          <li class="nav-item"><a class="nav-link" href="submit.html">Submit a Site</a></li>
+          <li class="nav-item"><a class="nav-link" href="resources.html">Resources</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+        </ul>
+      </div>
     </div>
-  </div>
-</nav>
+  </nav>
 
   <!-- Main Content -->
-  <div class="container mt-5">
-    <h2 class="text-center mb-4">About the Accessible Birding Atlas of Wisconsin</h2>
+  <main class="container mt-5">
+    <h2 class="text-center mb-4">About the Atlas</h2>
 
     <div class="about-section">
       <p class="lead">
-        The Accessible Birding Atlas of Wisconsin is a resource dedicated to making birding an inclusive activity for people of all abilities. Our mission is to highlight birding hotspots across Wisconsin that offer accessible trails, facilities, and experiences for everyone.
+        The Wisconsin Accessible Birding Atlas was created as a capstone project for a Masters of Science in Cartography GIS through the University of Wisconsin-Madison. Any students interested in assisting with or continuing on with this project can reach out through my <a href="https://joeywillman.github.io/Joseph-Willman-Portfolio/contact.html">website.</a>
       </p>
 
       <h4 class="mt-4">Our Mission</h4>
@@ -78,65 +93,52 @@
         <li class="list-group-item">Resources for birders of all backgrounds and abilities.</li>
       </ul>
 
-      <h4 class="mt-4">Acknowledgments</h4>
-      <p>
-        This project is made possible through collaboration with organizations dedicated to accessibility and conservation, including:
-      </p>
-      <ul>
-        <li><strong>Birdability</strong> – Promoting inclusive birding experiences.</li>
-      </ul>
-
       <h4 class="mt-4">Get Involved</h4>
       <p>
         We welcome contributions from the birding community! If you know of a site that should be included or have feedback on existing entries, please visit our <a href="submit.html">Submit a Site</a> page. Your input helps us grow and improve this resource.
       </p>
     </div>
-  </div>
+  </main>
 
   <!-- Footer -->
-<footer class="footer" style="background-color: #1A4D7A; padding: 20px; color: white; text-align: center;">
-  <div class="container">
-    <div class="row">
-      <div class="col-md-12">
-        <p style="margin: 0;">Copyright © 2024 Wisconsin Accessible Birding Atlas. All rights reserved.</p>
-        <img src="./assets/img/logo.png" alt="logo" height="75px" style="margin-top: 10px;">
+  <footer class="footer" style="background-color: #1A4D7A; padding: 20px; color: white; text-align: center;">
+    <div class="container">
+      <div class="row">
+        <div class="col-md-12">
+          <p class="mb-2">Copyright © 2024 Wisconsin Accessible Birding Atlas. All rights reserved.</p>
+          <img src="./assets/img/logo.png" alt="logo" height="75px" />
+        </div>
       </div>
     </div>
-  </div>
-</footer>
-  
+  </footer>
 
- <!-- Bootstrap JS (Fix for Navbar Toggle) -->
+  <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
+  <!-- Navbar Behavior Script -->
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      var navToggle = document.querySelector(".navbar-toggler");
-      var navCollapse = document.querySelector("#navbarNav");
-  
+      const navToggle = document.querySelector(".navbar-toggler");
+      const navCollapse = document.querySelector("#navbarNav");
+
       if (navToggle && navCollapse) {
-        // Close navbar when clicking outside of it
         document.addEventListener("click", function (event) {
           if (!navCollapse.contains(event.target) && !navToggle.contains(event.target)) {
             let bsCollapse = new bootstrap.Collapse(navCollapse, { toggle: false });
-            bsCollapse.hide(); // Proper Bootstrap method to close it
+            bsCollapse.hide();
           }
         });
-  
-        // Close navbar when clicking on a menu item (for better UX)
+
         document.querySelectorAll(".navbar-nav .nav-link").forEach(link => {
           link.addEventListener("click", function () {
-            if (window.innerWidth < 992) { // Only apply on mobile
+            if (window.innerWidth < 992) {
               let bsCollapse = new bootstrap.Collapse(navCollapse, { toggle: false });
-              bsCollapse.hide(); // Proper Bootstrap method to close it
+              bsCollapse.hide();
             }
           });
         });
       }
     });
   </script>
-  
-  
-  
 </body>
 </html>

@@ -1,23 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Submit a Site - Wisconsin Accessible Birding Atlas</title>
-  
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="assets/styles/style.css">
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Coiny&family=Radio+Canada&display=swap" rel="stylesheet">
-  
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="assets/styles/style.css" />
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Coiny&family=Radio+Canada&display=swap" rel="stylesheet" />
+
+  <!-- Internal Styles -->
   <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
     body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
       font-family: "Radio Canada", sans-serif;
+    }
+
+    main {
+      flex: 1;
     }
 
     /* Step Card Styles */
@@ -36,7 +51,6 @@
       box-shadow: 0px 6px 15px rgba(0, 0, 0, 0.15);
     }
 
-    /* Image Container for Hover Effect */
     .card-img-container {
       overflow: hidden;
     }
@@ -52,7 +66,7 @@
     }
 
     .step-card h4 {
-      color: #1B6CA7; /* Ocean blue */
+      color: #1B6CA7;
       font-weight: bold;
       margin-top: 15px;
     }
@@ -68,127 +82,120 @@
     }
   </style>
 </head>
+
 <body>
+  <!-- Navbar -->
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid">
+      <div class="d-flex align-items-center">
+        <a href="index.html">
+          <img src="assets/img/logo.png" alt="Logo" class="navbar-logo" />
+        </a>
+        <a class="navbar-brand" href="index.html">Wisconsin Accessible Birding Atlas</a>
+      </div>
 
- <!-- Navbar -->
- <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <div class="container-fluid">
-    <!-- Logo and Title in a Flex Container -->
-    <div class="d-flex align-items-center">
-      <a href="index.html">
-        <img src="assets/img/logo.png" alt="Logo" class="navbar-logo">
-      </a>
-      <a class="navbar-brand" href="index.html">Wisconsin Accessible Birding Atlas</a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
+          <li class="nav-item"><a class="nav-link" href="map.html">Map</a></li>
+          <li class="nav-item"><a class="nav-link" href="submit.html">Submit a Site</a></li>
+          <li class="nav-item"><a class="nav-link" href="resources.html">Resources</a></li>
+          <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+          <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Content -->
+  <main>
+    <!-- Page Header -->
+    <div class="container mt-5">
+      <h2 class="text-center mb-4">Submit a Birding Site</h2>
+      <p class="text-center">Follow these three steps to add an accessible birding site to the Wisconsin Accessible Birding Atlas.</p>
     </div>
 
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
-        <li class="nav-item"><a class="nav-link" href="map.html">Map</a></li>
-        <li class="nav-item"><a class="nav-link" href="submit.html">Submit a Site</a></li>
-        <li class="nav-item"><a class="nav-link" href="resources.html">Resources</a></li>
-        <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
-        <li class="nav-item"><a class="nav-link" href="contact.html">Contact</a></li>
-      </ul>
-    </div>
-  </div>
-</nav>
-
-  <!-- Page Header -->
-  <div class="container mt-5">
-    <h2 class="text-center mb-4">Submit a Birding Site</h2>
-    <p class="text-center">Follow these three steps to add an accessible birding site to the Wisconsin Accessible Birding Atlas.</p>
-  </div>
-
-  <!-- Step Cards -->
-  <div class="container">
-    <div class="row g-4">
-      
-      <!-- Step 1 -->
-      <div class="col-md-4">
-        <div class="step-card">
-          <div class="card-img-container">
-            <img src="assets/img/logo.png" class="card-img-top" alt="Birdability Guidelines">
+    <!-- Step Cards -->
+    <div class="container">
+      <div class="row g-4">
+        <!-- Step 1 -->
+        <div class="col-md-4">
+          <div class="step-card">
+            <div class="card-img-container">
+              <img src="assets/img/logo.png" class="card-img-top" alt="Birdability Guidelines" />
+            </div>
+            <div class="card-body">
+              <h4>Step 1: Review Accessibility Considerations</h4>
+              <p>Read <strong>Birdability’s Access Considerations</strong> to understand what makes a birding site accessible.</p>
+              <a href="https://www.birdability.org/access-considerations" target="_blank" class="btn btn-primary">Read Guidelines</a>
+            </div>
           </div>
-          <div class="card-body">
-            <h4>Step 1: Review Accessibility Considerations</h4>
-            <p>Read <strong>Birdability’s Access Considerations</strong> to understand what makes a birding site accessible.</p>
-            <a href="https://www.birdability.org/access-considerations" target="_blank" class="btn btn-primary">Read Guidelines</a>
+        </div>
+
+        <!-- Step 2 -->
+        <div class="col-md-4">
+          <div class="step-card">
+            <div class="card-img-container">
+              <img src="assets/img/logo.png" class="card-img-top" alt="Birdability Map" />
+            </div>
+            <div class="card-body">
+              <h4>Step 2: Perform a Birdability Site Review</h4>
+              <p>Review the site and add it to the <strong>Birdability Map</strong> to contribute to a national effort.</p>
+              <a href="https://www.birdability.org/contribute-to-the-birdability-map" target="_blank" class="btn btn-primary">Go to Birdability Map</a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 3 -->
+        <div class="col-md-4">
+          <div class="step-card">
+            <div class="card-img-container">
+              <img src="assets/img/logo.png" class="card-img-top" alt="Submit Site Form" />
+            </div>
+            <div class="card-body">
+              <h4>Step 3: Submit to Our Atlas</h4>
+              <p>Fill out the Wisconsin Accessible Birding Atlas form and upload your site details, including a trail file.</p>
+              <a href="#submit-form" class="btn btn-primary">Go to Submission Form</a>
+            </div>
           </div>
         </div>
       </div>
-
-      <!-- Step 2 -->
-      <div class="col-md-4">
-        <div class="step-card">
-          <div class="card-img-container">
-            <img src="assets/img/logo.png" class="card-img-top" alt="Birdability Map">
-          </div>
-          <div class="card-body">
-            <h4>Step 2: Perform a Birdability Site Review</h4>
-            <p>Review the site and add it to the <strong>Birdability Map</strong> to contribute to a national effort.</p>
-            <a href="https://www.birdability.org/contribute-to-the-birdability-map" target="_blank" class="btn btn-primary">Go to Birdability Map</a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Step 3 -->
-      <div class="col-md-4">
-        <div class="step-card">
-          <div class="card-img-container">
-            <img src="assets/img/logo.png" class="card-img-top" alt="Submit Site Form">
-          </div>
-          <div class="card-body">
-            <h4>Step 3: Submit to Our Atlas</h4>
-            <p>Fill out the Wisconsin Accessible Birding Atlas form and upload your site details, including a trail file.</p>
-            <a href="#submit-form" class="btn btn-primary">Go to Submission Form</a>
-          </div>
-        </div>
-      </div>
-
     </div>
-  </div>
-
-
+  </main>
 
   <!-- Footer -->
-  <footer class="footer mt-5" style="background-color: #1A4D7A; padding: 20px; color: white; text-align: center;">
+  <footer class="footer" style="background-color: #1A4D7A; padding: 20px; color: white; text-align: center;">
     <div class="container">
-      <p>Copyright © 2024 Wisconsin Accessible Birding Atlas. All rights reserved.</p>
-      <img src="./assets/img/logo.png" alt="logo" height="75px" style="margin-top: 10px;">
+      <p class="mb-2">Copyright © 2024 Wisconsin Accessible Birding Atlas. All rights reserved.</p>
+      <img src="./assets/img/logo.png" alt="logo" height="75px" />
     </div>
   </footer>
 
   <!-- Bootstrap JS -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
-  <!-- Bootstrap JS (Fix for Navbar Toggle) -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       var navToggle = document.querySelector(".navbar-toggler");
       var navCollapse = document.querySelector("#navbarNav");
-  
+
       if (navToggle && navCollapse) {
-        // Close navbar when clicking outside of it
         document.addEventListener("click", function (event) {
           if (!navCollapse.contains(event.target) && !navToggle.contains(event.target)) {
             let bsCollapse = new bootstrap.Collapse(navCollapse, { toggle: false });
-            bsCollapse.hide(); // Proper Bootstrap method to close it
+            bsCollapse.hide();
           }
         });
-  
-        // Close navbar when clicking on a menu item (for better UX)
+
         document.querySelectorAll(".navbar-nav .nav-link").forEach(link => {
           link.addEventListener("click", function () {
-            if (window.innerWidth < 992) { // Only apply on mobile
+            if (window.innerWidth < 992) {
               let bsCollapse = new bootstrap.Collapse(navCollapse, { toggle: false });
-              bsCollapse.hide(); // Proper Bootstrap method to close it
+              bsCollapse.hide();
             }
           });
         });

@@ -62,7 +62,7 @@ document.addEventListener("DOMContentLoaded", function () {
                "Satellite": L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
                    attribution: '&copy; OpenTopoMap'
                }),
-               "Gray Scale": L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+               "Gray Scale": L.tileLayer("https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", {
                    attribution: '&copy; CartoDB'
                })
            };
