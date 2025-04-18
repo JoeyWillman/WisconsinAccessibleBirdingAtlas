@@ -78,7 +78,7 @@ p {
   display: flex;
   align-items: center; /* Align items vertically */
   justify-content: space-between; /* Ensures spacing */
-  flex-wrap: nowrap; /* Prevent wrapping */
+  flex-wrap: wrap; /* Prevent wrapping */
   padding: 0.5rem 1rem; /* Reduce padding */
 }
 
@@ -137,6 +137,8 @@ p {
       height: 30px;
   }
 }
+
+
 
 
 /* --------------------------- */
@@ -370,7 +372,7 @@ form .btn-primary:hover {
 .cover-photo {
   position: relative;
   width: 100%;
-  height: 400px;
+  height: 250px;
   background: url('./assets/img/coverphoto.png') no-repeat top center;
   background-size: 100% auto; /* scale width, keep original image height */
   overflow: hidden; /* hide anything outside the div */
@@ -487,7 +489,7 @@ font-weight: 600;
   display: flex;
   align-items: center; /* Align items vertically */
   justify-content: space-between; /* Ensure spacing */
-  flex-wrap: nowrap; /* Prevent wrapping */
+  flex-wrap: wrap; /* Prevent wrapping */
   padding: 0.5rem 1rem; /* Reduce padding */
 }
 
@@ -817,7 +819,7 @@ text-decoration: underline;
 .cover-photo {
   position: relative;
   width: 100%;
-  height: 40vh; /* Scales dynamically */
+  height: 00px; /* Scales dynamically */
   min-height: 250px; /* Prevents it from disappearing */
   background: url('./assets/img/coverphoto.png') no-repeat center;
   background-size: cover;
@@ -955,14 +957,16 @@ box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 /* --------------------------- */
-/*   Updated Map Wrapper Fix   */
+/*   Map Container & Sidebar   */
 /* --------------------------- */
 
 #map-wrapper {
+  position: relative;
   display: flex;
+  flex-direction: row;
   width: 95%;
   max-width: 1600px;
-  height: 600px; /* smaller to fit screen */
+  height: 600px;
   margin: 30px auto;
   border: 3px solid #1A4D7A;
   border-radius: 10px;
@@ -971,6 +975,7 @@ box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
+/* Sidebar Panel */
 #filter-panel {
   width: 270px;
   padding: 20px;
@@ -980,19 +985,94 @@ box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  border-right: 2px solid #1B6CA7; /* Divider */
+  align-items: flex-start;
+  text-align: left;
+  border-right: 2px solid #1B6CA7;
+  transition: transform 0.3s ease;
+  z-index: 1000;
 }
 
+/* Sidebar Title */
 #filter-panel h4 {
   font-size: 18px;
   font-weight: bold;
   color: #1B6CA7;
   margin-bottom: 15px;
+  width: 100%;
+  text-align: left;
 }
 
+/* Filter Group Layout */
 .filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin-bottom: 10px;
+  width: 100%;
 }
+
+/* Apply Button Styling */
+#apply-filters {
+  align-self: flex-start;
+}
+
+/* Filter Toggle Button */
+#filter-toggle {
+  display: none;
+  z-index: 1100;
+}
+
+/* ❌ Close button for sidebar - hidden by default */
+#close-filter {
+  display: none; /* Hidden by default */
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  background: transparent;
+  color: #1A4D7A;
+  border: none;
+  font-size: 24px;
+  z-index: 1101;
+  cursor: pointer;
+}
+
+/* --------------------------- */
+/*     Mobile Responsiveness   */
+/* --------------------------- */
+@media (max-width: 1000px) {
+  #filter-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    transform: translateX(-100%);
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.3);
+    padding: 60px 20px 20px 20px;
+  }
+
+  #filter-panel.active {
+    transform: translateX(0);
+  }
+
+  #filter-toggle {
+    display: block;
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    background: #1A4D7A;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    z-index: 1100;
+  }
+
+  #close-filter {
+    display: block;
+  }
+}
+
 
 
 

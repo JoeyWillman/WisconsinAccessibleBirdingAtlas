@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.2/papaparse.min.js"></script>
-
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Wisconsin Accessible Birding Atlas</title>
@@ -15,8 +14,6 @@
   <link rel="stylesheet" href="assets/styles/style.css"/>
 
   <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
   <link href="https://fonts.googleapis.com/css2?family=Coiny&family=Radio+Canada&display=swap" rel="stylesheet"/>
 
   <style>
@@ -38,10 +35,47 @@
     }
 
     #map-wrapper {
-    border: 3px solid #1B6CA7 !important;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  }
+      display: flex;
+      flex-direction: row;
+      height: 600px;
+      width: 95%;
+      max-width: 1600px;
+      margin: 30px auto;
+      border: 3px solid #1A4D7A;
+      border-radius: 10px;
+      overflow: hidden;
+      background-color: white;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    #filter-panel {
+      width: 270px;
+      padding: 20px;
+      background-color: #ffffff;
+      font-size: 14px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start;
+      border-right: 2px solid #1B6CA7;
+    }
+
+    #map {
+      flex: 1;
+      height: 100%;
+    }
+
+    .leaflet-top.leaflet-left {
+      display: none !important;
+    }
+    
+
+    .leaflet-control-zoom {
+      position: absolute !important;
+      top: 10px !important;
+      right: 10px !important;
+      left: auto !important;
+    }
 
     .map-instructions {
       text-align: center;
@@ -54,6 +88,57 @@
       border-radius: 10px;
       box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
     }
+
+    .marker-dot {
+      width: 16px;
+      height: 16px;
+      background: #1B6CA7;
+      border: 2px solid white;
+      border-radius: 50%;
+      box-shadow: 0 0 2px rgba(0,0,0,0.4);
+      transition: transform 0.2s ease, background 0.2s ease;
+    }
+
+    .marker-dot.hovered {
+      background: #FF6600;
+      transform: scale(1.5);
+      box-shadow: 0 0 6px rgba(255, 102, 0, 0.5);
+    }
+
+    #filter-toggle {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  #filter-panel {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+    box-shadow: 2px 0 8px rgba(0,0,0,0.3);
+  }
+
+  #filter-panel.active {
+    transform: translateX(0);
+  }
+
+  #filter-toggle {
+    display: block;
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    z-index: 1100;
+    background: #1A4D7A;
+    color: white;
+    padding: 6px 12px;
+    border: none;
+    border-radius: 5px;
+  }
+}
+
   </style>
 </head>
 
@@ -62,16 +147,12 @@
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <div class="container-fluid">
       <div class="d-flex align-items-center">
-        <a href="index.html">
-          <img src="assets/img/logo.png" alt="Logo" class="navbar-logo" />
-        </a>
+        <a href="index.html"><img src="assets/img/logo.png" alt="Logo" class="navbar-logo" /></a>
         <a class="navbar-brand" href="index.html">Wisconsin Accessible Birding Atlas</a>
       </div>
-
-      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
         <span class="navbar-toggler-icon"></span>
       </button>
-
       <div class="collapse navbar-collapse" id="navbarNav">
         <ul class="navbar-nav ms-auto">
           <li class="nav-item"><a class="nav-link active" href="index.html">Home</a></li>
@@ -88,47 +169,22 @@
   <!-- Main Content -->
   <main>
     <div id="map-wrapper">
+      <button id="filter-toggle">☰ Filters</button>
       <div id="filter-panel">
+        <button id="close-filter">✖</button>
         <h4>Accessibility Filters</h4>
-        <div class="filter-group">
-          <input type="checkbox" class="filter-box" data-field="walkbike_info" id="walkbike_info">
-          <label for="walkbike_info">Walking/Biking Access</label>
-        </div>
-        <div class="filter-group">
-          <input type="checkbox" class="filter-box" data-field="transport_info" id="transport_info">
-          <label for="transport_info">Public Transportation</label>
-        </div>
-        <div class="filter-group">
-          <input type="checkbox" class="filter-box" data-field="parking_info" id="parking_info">
-          <label for="parking_info">Parking</label>
-        </div>
-        <div class="filter-group">
-          <input type="checkbox" class="filter-box" data-field="bathroom_info" id="bathroom_info">
-          <label for="bathroom_info">Bathrooms</label>
-        </div>
-        <div class="filter-group">
-          <input type="checkbox" class="filter-box" data-field="ramp_info" id="ramp_info">
-          <label for="ramp_info">Ramps</label>
-        </div>
-        <div class="filter-group">
-          <input type="checkbox" class="filter-box" data-field="step_info" id="step_info">
-          <label for="step_info">No Steps</label>
-        </div>
-        <div class="filter-group">
-          <input type="checkbox" class="filter-box" data-field="bench_info" id="bench_info">
-          <label for="bench_info">Benches</label>
-        </div>
-        <div class="filter-group">
-          <input type="checkbox" class="filter-box" data-field="car_birding" id="car_birding">
-          <label for="car_birding">Car Birding</label>
-        </div>
+        <div class="filter-group"><input type="checkbox" class="filter-box" data-field="walkbike_info" id="walkbike_info"><label for="walkbike_info">Walking/Biking Access</label></div>
+        <div class="filter-group"><input type="checkbox" class="filter-box" data-field="transport_info" id="transport_info"><label for="transport_info">Public Transportation</label></div>
+        <div class="filter-group"><input type="checkbox" class="filter-box" data-field="parking_info" id="parking_info"><label for="parking_info">Parking</label></div>
+        <div class="filter-group"><input type="checkbox" class="filter-box" data-field="bathroom_info" id="bathroom_info"><label for="bathroom_info">Bathrooms</label></div>
+        <div class="filter-group"><input type="checkbox" class="filter-box" data-field="ramp_info" id="ramp_info"><label for="ramp_info">Ramps</label></div>
+        <div class="filter-group"><input type="checkbox" class="filter-box" data-field="step_info" id="step_info"><label for="step_info">No Steps</label></div>
+        <div class="filter-group"><input type="checkbox" class="filter-box" data-field="bench_info" id="bench_info"><label for="bench_info">Benches</label></div>
+        <div class="filter-group"><input type="checkbox" class="filter-box" data-field="car_birding" id="car_birding"><label for="car_birding">Car Birding</label></div>
         <button id="apply-filters" class="btn btn-sm btn-primary mt-2">Apply Filters</button>
       </div>
-    
       <div id="map"></div>
     </div>
-    
-    
 
     <div class="map-instructions">
       <h3>How to Use This Map</h3>
@@ -155,7 +211,7 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 
   <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener("DOMContentLoaded", () => {
       const navToggle = document.querySelector(".navbar-toggler");
       const navCollapse = document.querySelector("#navbarNav");
 

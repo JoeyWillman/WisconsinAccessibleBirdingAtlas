@@ -1,92 +1,11 @@
 console.log("✅ main.js is running");
 
-// Inject CSS for layout and markers
-const style = document.createElement("style");
-style.innerHTML = `
-#map-wrapper {
-  display: flex;
-  width: 95%;
-  max-width: 1600px;
-  height: 600px; /* smaller to fit screen */
-  margin: 30px auto;
-  border: 3px solid #1A4D7A;
-  border-radius: 10px;
-  overflow: hidden;
-  background-color: white;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
+// Initialize map
+const map = L.map('map', {
+  zoomControl: false
+}).setView([43.0731, -89.4012], 10);
 
-#filter-panel {
-  width: 270px;
-  padding: 20px;
-  background-color: #ffffff;
-  font-size: 14px;
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  align-items: flex-start; /* ← ensures content aligns left in flexbox */
-  text-align: left; /* ← text aligns left */
-  border-right: 2px solid #1B6CA7; /* Divider */
-}
-
-  #map {
-  flex: 1;
-  height: 100%;
-}
-
-
-#filter-panel h4 {
-  font-size: 18px;
-  font-weight: bold;
-  color: #1B6CA7;
-  margin-bottom: 15px;
-}
-
-.filter-group {
-  margin-bottom: 10px;
-}
-  .marker-dot {
-    width: 16px;
-    height: 16px;
-    background: #1B6CA7;
-    border: 2px solid white;
-    border-radius: 50%;
-    box-shadow: 0 0 2px rgba(0,0,0,0.4);
-    transition: transform 0.2s ease, background 0.2s ease;
-  }
-  .marker-dot.hovered {
-    background: #FF6600;
-    transform: scale(1.5);
-    box-shadow: 0 0 6px rgba(255, 102, 0, 0.5);
-  }
-`;
-document.head.appendChild(style);
-
-// Accessibility fields for filtering
-const accessibilityFields = [
-  { field: "walkbike_info", label: "Walking/Biking Access" },
-  { field: "transport_info", label: "Public Transportation" },
-  { field: "parking_info", label: "Parking" },
-  { field: "bathroom_info", label: "Bathrooms" },
-  { field: "ramp_info", label: "Ramps" },
-  { field: "step_info", label: "No Steps" },
-  { field: "bench_info", label: "Benches" },
-  { field: "car_birding", label: "Car Birding" }
-];
-
-// Inject filter panel into #filter-panel div already in HTML
-const filterPanel = document.getElementById("filter-panel");
-filterPanel.innerHTML = `
-  <h4>Accessibility Filters</h4>
-  ${accessibilityFields.map(item =>
-    `<div><input type="checkbox" class="filter-box" data-field="${item.field}" id="${item.field}">
-     <label for="${item.field}">${item.label}</label></div>`).join("")}
-  <button id="apply-filters" class="btn btn-sm btn-primary mt-2">Apply Filters</button>
-`;
-
-// Initialize Leaflet map
-const map = L.map('map').setView([43.0731, -89.4012], 10);
+L.control.zoom({ position: 'topright' }).addTo(map);
 
 L.tileLayer("https://api.maptiler.com/maps/outdoor/{z}/{x}/{y}.png?key=pElhqCSXeJs6cZHy1cx4", {
   attribution: '&copy; <a href="https://www.maptiler.com/">MapTiler</a> &copy; OpenStreetMap contributors',
@@ -106,25 +25,19 @@ fetch('assets/data/sites.csv')
     displayFilteredMarkers();
   });
 
-// Accessibility filtering logic
 function matchesAccessibility(site, field) {
   const val = (site[field] || "").toLowerCase().trim();
-
   const negativeIndicators = [
-    "no ", "not available", "not present", "not wheelchair accessible", "none", "lack of", "without", "absent", "not suitable"
+    "no ", "not available", "not present", "not wheelchair accessible",
+    "none", "lack of", "without", "absent", "not suitable"
   ];
 
   if (field === "car_birding") return val === "yes" || val === "true";
   if (field === "step_info") return val.includes("no steps") || val.includes("no stairs") || val.includes("step-free");
 
-  for (const phrase of negativeIndicators) {
-    if (val.includes(phrase)) return false;
-  }
-
-  return true;
+  return !negativeIndicators.some(phrase => val.includes(phrase));
 }
 
-// Display markers after filtering
 function displayFilteredMarkers() {
   allMarkers.forEach(m => map.removeLayer(m));
   allMarkers = [];
@@ -169,4 +82,43 @@ function displayFilteredMarkers() {
   });
 }
 
-document.getElementById("apply-filters").addEventListener("click", displayFilteredMarkers);
+// Apply filters button
+const applyBtn = document.getElementById("apply-filters");
+if (applyBtn) {
+  applyBtn.addEventListener("click", displayFilteredMarkers);
+} else {
+  console.warn("⚠️ Could not find #apply-filters button.");
+}
+
+// Sidebar toggle buttons
+const filterToggle = document.getElementById("filter-toggle");
+const filterPanel = document.getElementById("filter-panel");
+const closeBtn = document.getElementById("close-filter");
+
+if (filterToggle && filterPanel && closeBtn) {
+  filterToggle.addEventListener("click", () => {
+    filterPanel.classList.add("active");
+    filterToggle.style.display = "none";
+  });
+
+  closeBtn.addEventListener("click", () => {
+    filterPanel.classList.remove("active");
+    filterToggle.style.display = "block";
+  });
+} else {
+  console.warn("⚠️ Filter toggle or close button not found.");
+}
+
+// Auto-hide mobile filter state on window resize
+window.addEventListener("resize", () => {
+  if (window.innerWidth > 1000) {
+    // On larger screens, reset sidebar state
+    filterPanel.classList.remove("active");
+    closeBtn.style.display = "none";
+    filterToggle.style.display = "none";
+  } else {
+    // On small screens, prepare mobile toggle UI
+    closeBtn.style.display = "block";
+    filterToggle.style.display = filterPanel.classList.contains("active") ? "none" : "block";
+  }
+});
