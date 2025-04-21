@@ -14,6 +14,56 @@ L.tileLayer("https://api.maptiler.com/maps/outdoor/{z}/{x}/{y}.png?key=pElhqCSXe
   maxZoom: 20
 }).addTo(map);
 
+fetch("assets/data/WI-Boundary.geojson")
+  .then(res => res.json())
+  .then(wiGeojson => {
+    // Draw the WI boundary in black
+    L.geoJSON(wiGeojson, {
+      style: {
+        color: "black",
+        weight: 2,
+        fillOpacity: 0
+      }
+    }).addTo(map);
+
+    // Extract Wisconsin coordinates (all holes)
+    const wiRings = wiGeojson.features.flatMap(f => {
+      const geom = f.geometry;
+      if (geom.type === "Polygon") return [geom.coordinates];
+      if (geom.type === "MultiPolygon") return geom.coordinates;
+      return [];
+    });
+
+    // Build an outer world square with Wisconsin as holes
+    const maskPolygon = {
+      type: "Feature",
+      geometry: {
+        type: "Polygon",
+        coordinates: [
+          [ // outer ring (world bounds)
+            [-180, -90],
+            [180, -90],
+            [180, 90],
+            [-180, 90],
+            [-180, -90]
+          ],
+          ...wiRings.map(ring => ring[0]) // add outer rings of WI as holes
+        ]
+      }
+    };
+
+    // Draw gray mask outside WI
+    L.geoJSON(maskPolygon, {
+      style: {
+        fillColor: "#999",
+        fillOpacity: 0.4,
+        stroke: false
+      }
+    }).addTo(map);
+  })
+  .catch(err => console.error("❌ Failed to load WI-Boundary.geojson:", err));
+
+
 // Marker logic
 let allMarkers = [];
 let siteData = [];

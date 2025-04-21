@@ -55,55 +55,64 @@ document.addEventListener("DOMContentLoaded", function () {
            const tourMap = L.map("tour-map").setView([lat, lon], 14);
 
            // Define basemap layers using MapTiler
-var basemaps = {
-    "Outdoor": L.tileLayer("https://api.maptiler.com/maps/outdoor/{z}/{x}/{y}.png?key=pElhqCSXeJs6cZHy1cx4", {
-        attribution: '&copy; <a href="https://www.maptiler.com/">MapTiler</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
-    }),
-    "Satellite": L.tileLayer("https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=pElhqCSXeJs6cZHy1cx4", {
-        attribution: '&copy; <a href="https://www.maptiler.com/">MapTiler</a>'
-    }),
-    "Gray Scale": L.tileLayer("https://api.maptiler.com/maps/toner/{z}/{x}/{y}.png?key=pElhqCSXeJs6cZHy1cx4", {
-        attribution: '&copy; <a href="https://www.maptiler.com/">MapTiler</a>'
-    })
-};
+           var basemaps = {
+            "Outdoor": L.tileLayer("https://api.maptiler.com/maps/outdoor/{z}/{x}/{y}.png?key=pElhqCSXeJs6cZHy1cx4", {
+                attribution: '&copy; <a href="https://www.maptiler.com/">MapTiler</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'
+            }),
+            "Satellite": L.tileLayer("https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=pElhqCSXeJs6cZHy1cx4", {
+                attribution: '&copy; <a href="https://www.maptiler.com/">MapTiler</a>'
+            }),
+            "OSM": L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+                attribution: '&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
+            })
+        };
 
 // Add the default basemap (MapTiler Outdoor)
 basemaps["Outdoor"].addTo(tourMap);
 
 
-            // Load points and trails
-fetch("assets/data/points.csv")
-.then((res) => res.text())
-.then((data) => {
-  let points = Papa.parse(data, { header: true }).data;
-  let allTrailLayers = [];
+            // Add default basemap (Outdoor)
+basemaps["Outdoor"].addTo(tourMap);
 
-  points.forEach((point) => {
-    if (point.site_id.trim() === siteId.trim()) {
+// Load points and trails for the current site
+fetch("assets/data/points.csv")
+  .then(res => res.text())
+  .then(data => {
+    const points = Papa.parse(data, { header: true }).data;
+    const allTrailLayers = [];
+
+    points.forEach(point => {
+      if (point.site_id.trim() !== siteId.trim()) return;
+
+      const pointLat = parseFloat(point.lat);
+      const pointLon = parseFloat(point.lon);
+
+      // Trails
       if (point.type === "trail" && point.filename) {
-        let trailUrl = `assets/data/trails/${point.filename}.geojson`;
+        const trailUrl = `assets/data/trails/${point.filename}.geojson`;
 
         fetch(trailUrl)
-          .then((res) => res.json())
-          .then((geojsonData) => {
-            let trailLayer = L.geoJSON(geojsonData, {
-              style: { color: "blue", weight: 4, opacity: 0.7 },
-              onEachFeature: function (feature, layer) {
-                layer.on({
-                  mouseover: function () {
-                    layer.setStyle({
-                      color: "orange",
-                      weight: 5,
-                      opacity: 1
-                    });
+          .then(res => res.json())
+          .then(geojsonData => {
+            const trailLayer = L.geoJSON(geojsonData, {
+                style: {
+                    color: "#1B6CA7",         // A deep sky blue that fits your theme
+                    weight: 3.5,               // Slightly thinner
+                    opacity: 1,                // Fully visible
+                    dashArray: "4, 6",         // Dashed line = trail-like
+                    lineCap: "round",          // Smooth ends
+                    lineJoin: "round"
                   },
-                  mouseout: function () {
-                    trailLayer.resetStyle(layer);
-                  }
+              onEachFeature: (feature, layer) => {
+                layer.on({
+                  mouseover: () => layer.setStyle({ color: "orange", weight: 5, opacity: 1 }),
+                  mouseout: () => trailLayer.resetStyle(layer)
                 });
               }
-            }).addTo(tourMap)
-              .bindPopup(`<strong>${point.name}</strong><br>${point.description || "No description available."}`);
+            }).addTo(tourMap).bindPopup(`
+              <strong>${point.name}</strong><br>
+              ${point.description || "No description available."}
+            `);
 
             allTrailLayers.push(trailLayer);
 
@@ -111,38 +120,40 @@ fetch("assets/data/points.csv")
               tourMap.fitBounds(trailLayer.getBounds());
             }
           })
-          .catch((error) => console.error(`❌ Error loading trail GeoJSON: ${trailUrl}`, error));
-      } else {
-        let pointLat = parseFloat(point.lat);
-        let pointLon = parseFloat(point.lon);
-        if (!isNaN(pointLat) && !isNaN(pointLon)) {
-          let iconUrl = `assets/icons/${point.type}.png`;
-          let defaultIcon = L.icon({
-            iconUrl: iconUrl,
-            iconSize: [20, 20],
-            iconAnchor: [10, 20],
-            popupAnchor: [0, -20]
-          });
+          .catch(err => console.error(`❌ Error loading trail GeoJSON: ${trailUrl}`, err));
 
-          let hoverIcon = L.icon({
-            iconUrl: iconUrl,
-            iconSize: [28, 28],
-            iconAnchor: [14, 28],
-            popupAnchor: [0, -28]
-          });
+      // Points
+      } else if (!isNaN(pointLat) && !isNaN(pointLon)) {
+        const iconUrl = `assets/icons/${point.type}.png`;
 
-          let marker = L.marker([pointLat, pointLon], { icon: defaultIcon })
-            .addTo(tourMap)
-            .bindPopup(`<strong>${point.name}</strong><br>${point.description || "No description available."}`);
+        const divIcon = L.divIcon({
+          className: "custom-icon-wrapper",
+          html: `<div class="custom-icon"><img src="${iconUrl}" alt="${point.name} icon"/></div>`,
+          iconSize: [30, 30],
+          iconAnchor: [15, 30],
+          popupAnchor: [0, -30]
+        });
 
-          marker.on("mouseover", () => marker.setIcon(hoverIcon));
-          marker.on("mouseout", () => marker.setIcon(defaultIcon));
-        }
+        const marker = L.marker([pointLat, pointLon], { icon: divIcon })
+          .addTo(tourMap)
+          .bindPopup(`
+            <strong>${point.name}</strong><br>
+            ${point.description || "No description available."}
+          `);
+        marker.on("mouseover", () => {
+          const el = marker.getElement();
+          if (el) el.classList.add("hovered-marker");
+        });
+
+        marker.on("mouseout", () => {
+          const el = marker.getElement();
+          if (el) el.classList.remove("hovered-marker");
+        });
       }
-    }
-  });
-})
-.catch((error) => console.error("❌ Error loading points data:", error));
+    });
+  })
+  .catch(err => console.error("❌ Error loading points.csv:", err));
+
 
 console.log("✅ Map initialized, points and trails loaded.");
 
@@ -323,75 +334,53 @@ var basemapControl = L.control({ position: "bottomleft" });
 basemapControl.onAdd = function () {
     var div = L.DomUtil.create("div", "leaflet-control-basemap leaflet-bar");
     div.innerHTML = `
-        <button id="basemap-toggle" class="leaflet-control-button">Basemaps</button>
-        <div id="basemap-menu" class="basemap-menu hidden">
-  <button class="basemap-option" data-layer="Outdoor">Outdoor</button>
-  <button class="basemap-option" data-layer="Satellite">Satellite</button>
-  <button class="basemap-option" data-layer="GrayScale">Gray Scale</button>
-</div>
+    <button id="basemap-toggle" class="leaflet-control-button">Basemaps</button>
+    <div id="basemap-menu" class="basemap-menu hidden">
+        <button class="basemap-option" data-layer="Outdoor">Outdoor</button>
+        <button class="basemap-option" data-layer="Satellite">Satellite</button>
+        <button class="basemap-option" data-layer="OSM">OpenStreetMap</button>
+    </div>
+`;
 
-    `;
+
     return div;
 };
 
-// Add the basemap control to the map **before attaching event listeners**
+let currentBasemap = basemaps["Outdoor"]; // Declare this right after the basemaps object
 basemapControl.addTo(tourMap);
 
-// Wait for DOM to be fully loaded before adding event listeners
 setTimeout(() => {
     const basemapToggle = document.getElementById("basemap-toggle");
     const basemapMenu = document.getElementById("basemap-menu");
 
-    // Ensure elements exist before attaching event listeners
     if (basemapToggle && basemapMenu) {
         basemapToggle.addEventListener("click", function () {
-            basemapMenu.classList.toggle("hidden"); // Toggle menu visibility
+            basemapMenu.classList.toggle("hidden");
         });
 
-        const basemaps = {
-            Outdoor: L.tileLayer("https://api.maptiler.com/maps/outdoor/{z}/{x}/{y}.png?key=pElhqCSXeJs6cZHy1cx4", {
-              attribution: '&copy; <a href="https://www.maptiler.com/">MapTiler</a> &copy; OpenStreetMap contributors'
-            }),
-            Satellite: L.tileLayer("https://api.maptiler.com/maps/hybrid/{z}/{x}/{y}.jpg?key=pElhqCSXeJs6cZHy1cx4", {
-              attribution: '&copy; <a href="https://www.maptiler.com/">MapTiler</a>'
-            }),
-            GrayScale: L.tileLayer("https://api.maptiler.com/maps/toner/{z}/{x}/{y}.png?key=pElhqCSXeJs6cZHy1cx4", {
-              attribution: '&copy; <a href="https://www.maptiler.com/">MapTiler</a>'
-            })
-          };
-          
-          let currentBasemap = basemaps.Outdoor;
-          const tourMap = L.map("tour-map", {
-            center: [lat, lon],
-            zoom: 14,
-            maxZoom: 20 // Allow zooming in further
-          });
-          
-          
-
-        // Change basemap without removing trails and markers
         document.querySelectorAll(".basemap-option").forEach((button) => {
             button.addEventListener("click", function () {
                 let selectedLayer = this.getAttribute("data-layer");
-
-                // Remove only the basemap, not the whole map layers
-                tourMap.eachLayer((layer) => {
-                    if (layer.options && layer.options.attribution) {
-                        tourMap.removeLayer(layer);
-                    }
-                });
-
-                currentBasemap = basemaps[selectedLayer];
-                currentBasemap.addTo(tourMap);
-
-                // Close menu after selection
-                basemapMenu.classList.add("hidden");
+        
+                if (basemaps[selectedLayer]) {
+                    // Properly remove the currently visible basemap
+                    currentBasemap.remove();
+        
+                    // Set and add the new basemap
+                    currentBasemap = basemaps[selectedLayer];
+                    currentBasemap.addTo(tourMap);
+        
+                    // Hide the basemap menu
+                    basemapMenu.classList.add("hidden");
+                }
             });
         });
+        
     } else {
         console.error("❌ Basemap menu or toggle button not found.");
     }
-}, 500); // Small delay to ensure menu is added before event listeners are attached
+}, 500);
+
 
 // CSS for Basemap Menu
 var style = document.createElement("style");
